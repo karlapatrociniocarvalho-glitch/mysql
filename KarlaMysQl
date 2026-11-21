@@ -1,0 +1,73 @@
+#Exercícios plataforma hospedagens - 19/11/2026
+
+/*Para resolução dos exercícios, utilize a função "Reverse Engineer"
+disponível em "Database" localizado na parte superior do MySQL,
+para gerar os Diagramas Lógicos e facilitar a resolução dos problemas.*/
+
+/*
+1. Exiba somente os campos com o valor mais alto
+de aluguel.
+*/
+SELECT * FROM reservas
+ORDER BY preco_total DESC
+LIMIT 10;
+
+/*
+2. Realize uma consulta que mostre o nome do cliente que mais
+gastou, além de exibir o total de dias passados na hospedagem
+*/
+SELECT
+    c.nome AS nome_cliente,
+    SUM(h.valor_total) AS total_gasto,
+    SUM(DATEDIFF(h.data_saida, h.data_entrada)) AS total_dias_hospedagem
+FROM clientes c
+JOIN hospedagens h
+    ON h.cliente_id = c.id
+GROUP BY
+    c.id,
+    c.nome
+ORDER BY
+    total_gasto DESC
+LIMIT 10 ;
+
+/*
+3. Desenvolva uma consulta em que sejam exibidos os tipos 
+de imóveis mais bem avaliados, junto com os comentários.
+*/
+SELECT
+    t.tipo AS Tipo_Imovel,
+    a.nota AS Avaliacao,
+    a.comentario AS Comentario
+FROM imoveis i
+INNER JOIN tipos_imoveis t
+    ON i.id_tipo = t.id_tipo
+INNER JOIN avaliacoes a
+    ON i.id_imovel = a.id_imovel
+ORDER BY a.nota DESC
+LIMIT 10;
+
+/*
+4.Agora, realize uma consulta que retorne, além das 
+avaliações e comentários, o nome do proprietario
+e cidade da hospedagem dos tipos hoteis.
+*/
+SELECT
+    p.nome AS Nome_Proprietario,
+    h.cidade AS Cidade_Hospedagem,
+    a.nota AS Avaliacao,
+    a.comentario AS Comentario
+FROM imoveis i
+INNER JOIN proprietarios p
+    ON i.id_proprietario = p.id_proprietario
+INNER JOIN hospedagens h
+    ON i.id_imovel = h.id_imovel
+INNER JOIN avaliacoes a
+    ON i.id_imovel = a.id_imovel
+WHERE i.tipo = 'Hotel'
+ORDER BY a.nota DESC
+LIMIT 10;
+
+
+
+
+
